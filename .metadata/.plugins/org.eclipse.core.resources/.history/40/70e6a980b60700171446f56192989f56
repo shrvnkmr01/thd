@@ -1,0 +1,14 @@
+package com.homer.uistore;
+
+import org.openqa.selenium.By;
+
+public class SRG_Login {
+	public static String URL="http://webapps-qa.homedepot.com/POGBayUI";
+	public static final By usrname = By.name("j_username");
+	public static final By passwrd = By.name("j_password");
+	public static final By submit = By.xpath(".//*[@id='submit']");
+	public static String uname="NXR8178";
+	public static String pswrd="TestMe123!";
+			
+	
+}

@@ -1,0 +1,528 @@
+package com.homer.po;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.LocalFileDetector;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+import com.homer.dao.InstanceContainer;
+import com.homer.enums.EnumClass.StepResult;
+import com.homer.uistore.DB_Config;
+import com.homer.uistore.SRG_Login;
+import com.homer.uistore.SRG_Search_update_page;
+import com.homer.uistore.Uplaod_SRG;
+
+
+public class Srg extends PageBase {
+	String File_Name;
+	String File_Name1;
+	String Filepath;
+	
+	public Srg(InstanceContainer ic) {
+		
+		super(ic);
+		// TO DO Auto-generated constructor stub
+	}
+	
+
+	public void open() throws Exception {
+		System.out.println("open");
+		driver.manage().timeouts().implicitlyWait(90, TimeUnit.SECONDS);
+	    driver.get(SRG_Login.URL);
+	    driver.manage().window().maximize();
+	    wh.waitForElementPresent(SRG_Login.usrname);
+	    wh.sendKeys(SRG_Login.usrname, SRG_Login.uname );
+		wh.sendKeys(SRG_Login.passwrd,SRG_Login.pswrd );
+		Thread.sleep(1000);
+		wh.clickElement(SRG_Login.submit);
+		Thread.sleep(3000);
+		report.addReportStep("verify SRG home page is displayed.", "SRG homepage is dispalyed.", StepResult.PASS);
+		Thread.sleep(3000);
+		if(wh.isElementPresent(SRG_Login.invalid_alert))
+		{
+			wh.clickElement(SRG_Login.invalid_alert);
+		}
+		wh.waitForElementPresent(SRG_Search_update_page.Uplaod_SRG_tab);
+		
+		
+	}
+	
+	public void selecthierarchy(WebDriver driver)  throws Exception
+	{
+		System.out.println("selecthierarchy");
+		Thread.sleep(10000);
+		
+		wh.clickElement(SRG_Search_update_page.blind_dept);
+		Thread.sleep(1000);
+		
+		report.addReportStep("One tree Hierarchy should be selected.", " One tree Hierarchy is selected.", StepResult.PASS);
+	}
+	
+	
+	public void searchBtn(WebDriver driver) throws Exception
+	{
+		System.out.println("searchBtn");
+		Thread.sleep(1000);
+		wh.clickElement(SRG_Search_update_page.Search);
+		
+	    Thread.sleep(5000);
+	    report.addReportStep("Verify user is able to click on search button.", "useer is able to click on search button.", StepResult.PASS);
+	    String datagrid =wh.getText(SRG_Search_update_page.Grid);
+		if(datagrid.equals(" "))
+		{
+			System.out.println("No data is found for the selected hierarchy");
+			
+		}
+		else
+		{
+			System.out.println("data exists... Proceed further");
+		}
+		report.addReportStep("Verify the search results are displayed in the grid upon clicking search button.", "search results are displayed in the grid upon clicking search button.", StepResult.PASS);
+	
+		
+		
+	}
+	
+	public void SearchName(WebDriver driver) throws Exception
+	{
+		System.out.println("SearchName");
+		wh.clickElement(SRG_Search_update_page.Searchpage);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.Searchby_Name);
+		Thread.sleep(1000);
+		driver.findElement(SRG_Search_update_page.Searchby_Name_field).sendKeys(File_Name);
+		wh.clickElement(SRG_Search_update_page.Search);
+		Thread.sleep(2000);
+		String Ref_Name=driver.findElement(SRG_Search_update_page.SRG_Name).getText();
+		if (Ref_Name.equals(File_Name))
+		{
+			
+			report.addReportStep("Verify the SRG file is available in SRG grid while searching with its filename", "The SRG file is available in SRG grid.", StepResult.PASS);
+		}
+		else
+		{
+			report.addReportStep("Verify the SRG file is available in SRG grid while searching with its filename", "The SRG file is not available in SRG grid.", StepResult.FAIL);
+		}
+	}
+	
+	
+	public void SearchName1(WebDriver driver) throws Exception
+	{
+		
+		System.out.println("Searching...");
+		
+		wh.waitForElementPresent(SRG_Search_update_page.back_search);
+		Thread.sleep(1000);
+		wh.clickElement(SRG_Search_update_page.back_search);
+		
+		wh.waitForElementPresent(SRG_Search_update_page.back_ok);
+		Thread.sleep(1000);
+		wh.clickElement(SRG_Search_update_page.back_ok);
+		
+		wh.waitForElementPresent(SRG_Search_update_page.Searchby_Name);
+		Thread.sleep(1000);
+		wh.clickElement(SRG_Search_update_page.Searchby_Name);
+		
+		wh.waitForElementPresent(SRG_Search_update_page.Searchby_Name_field);
+		Thread.sleep(1000);
+		driver.findElement(SRG_Search_update_page.Searchby_Name_field).sendKeys(File_Name1);
+		
+		wh.waitForElementPresent(SRG_Search_update_page.Search);
+		Thread.sleep(1000);
+		wh.clickElement(SRG_Search_update_page.Search);
+		
+		wh.waitForElementPresent(SRG_Search_update_page.SRG_Name);
+		Thread.sleep(2000);
+		String Ref_Name=driver.findElement(SRG_Search_update_page.SRG_Name).getText();
+		
+		if (Ref_Name.equals(File_Name1))
+		{
+			report.addReportStep("Verify the SRG file is available in SRG grid while searching with its filename", "The SRG file is available in SRG grid.", StepResult.PASS);
+		}
+		else
+		{
+			report.addReportStep("Verify the SRG file is available in SRG grid while searching with its filename", "The SRG file is not available in SRG grid.", StepResult.FAIL);
+		}
+		
+		
+	}
+	
+	
+	public void viewsearchBtn(WebDriver driver) throws Exception
+	{
+		System.out.println("viewsearchBtn");
+		
+		wh.waitForElementPresent(SRG_Search_update_page.Row1_nbr);
+		Thread.sleep(1000);
+		wh.clickElement(SRG_Search_update_page.Row1_nbr);
+		
+		String srg1=wh.getText(SRG_Search_update_page.Row1_nbr);
+		System.out.println(srg1);
+		
+		
+		wh.waitForElementPresent(SRG_Search_update_page.View);
+		Thread.sleep(1000);	       
+	    driver.findElement(SRG_Search_update_page.View).click();
+	    
+	    Thread.sleep(3000);
+	    report.addReportStep("Verify SRG Pdf file is opened upon clicking view button.", "SRG Pdf file is opened.", StepResult.PASS);
+	    Thread.sleep(3000);
+	    
+	    String parentWindow = driver.getWindowHandle();
+	    Set<String> handles =  driver.getWindowHandles();
+	       for(String windowHandle  : handles)
+	           {
+	           if(!windowHandle.equals(parentWindow))
+	              {
+	              driver.switchTo().window(windowHandle);
+	              Thread.sleep(11000);
+	            driver.close();
+	              
+	             driver.switchTo().window(parentWindow);//cntrl to parent window
+	             
+	              }
+	           }
+	       
+	       
+	    
+	}
+	
+	public void DeleteBtn(WebDriver driver) throws Exception
+	{
+		
+		System.out.println("DeleteBtn");
+		System.out.println("Deleting the file");
+		
+		wh.waitForElementPresent(SRG_Search_update_page.Row1_nbr);
+		Thread.sleep(1000);	
+		wh.clickElement(SRG_Search_update_page.Row1_nbr);
+		
+		String srg1=wh.getText(SRG_Search_update_page.Row1_nbr);
+		System.out.println(srg1);
+		String srg2=wh.getText(SRG_Search_update_page.Grid);
+		Thread.sleep(2000);
+		
+		if(wh.isElementPresent(SRG_Search_update_page.Delete))
+		{
+		wh.clickElement(SRG_Search_update_page.Delete);
+		
+		wh.waitForElementPresent(SRG_Search_update_page.Popup_ok);
+		Thread.sleep(1000);			
+		wh.clickElement(SRG_Search_update_page.Popup_ok);
+		Thread.sleep(2000);
+		
+		report.addReportStep("verify is user able to click on Delete Button .", "user is able to click on Delete Button.", StepResult.PASS);
+		
+		wh.clickElement(SRG_Search_update_page.Popup_ok);
+		Thread.sleep(2000);
+		}
+		else{
+			report.addReportStep("Verify is user able to click on Delete Button .", "user is not able to click on Delete Button.", StepResult.FAIL);
+		}
+		
+
+	    
+	    if(srg1.contains(srg2))
+	    {
+	    	report.addReportStep("Verify selected SRG is deleted from the SRG grid .", "Selected SRG is deleted from the SRG grid.", StepResult.FAIL);
+	    }
+	    else
+	    {
+	    	report.addReportStep("Verify selected SRG is deleted from the SRG grid .", "Selected SRG is deleted from the SRG grid.", StepResult.PASS);
+	    }
+	    
+	    String query="select count(*) from dbo.srg_document(nolock) where SRG_NAME='"+ File_Name +"'";
+		System.out.println(query);
+		    ResultSet rslt=DB_Config.getQryResult(query);
+		    rslt.next();
+		    String Type = rslt.getString(1);
+		    
+		    if (Type.equals("0")){
+		    	report.addReportStep("Verify the SRG document is deleted from the DB.", "The SRG document is deleted from the DB.", StepResult.PASS);	    	
+		    }
+		    
+		    else{
+		    	report.addReportStep("Verify the SRG document is deleted from the DB.", "The SRG document is not deleted from the DB.", StepResult.FAIL);
+		    }
+		    
+	}
+	
+	
+	public void UpdateBtn(WebDriver driver) throws Exception
+	{
+		System.out.println("UpdateBtn");
+		
+		wh.waitForElementPresent(SRG_Search_update_page.Row1_nbr);
+		Thread.sleep(1000);	
+		wh.clickElement(SRG_Search_update_page.Row1_nbr);
+		
+		Thread.sleep(2000);
+		String srg1=wh.getText(SRG_Search_update_page.Row1_name);
+		System.out.println(srg1);
+		
+		wh.waitForElementPresent(SRG_Search_update_page.update);
+		Thread.sleep(1000);	
+		wh.clickElement(SRG_Search_update_page.update);
+		
+		Thread.sleep(2000);
+		String timeStamp = new SimpleDateFormat("MMddHHmmss").format(Calendar.getInstance().getTime());
+		File_Name1=Uplaod_SRG.New_name+timeStamp;
+		Thread.sleep(2000);
+		
+		wh.waitForElementPresent(SRG_Search_update_page.update_name);
+		Thread.sleep(1000);	
+		wh.clearElement(SRG_Search_update_page.update_name);
+		
+		//String SRGNM=wh.getText(SRG_Search_update_page.update_name);
+		
+		Thread.sleep(1000);	
+		wh.sendKeys(SRG_Search_update_page.update_name,File_Name1 );
+		
+		wh.waitForElementPresent(SRG_Search_update_page.body);
+		Thread.sleep(1000);	
+		wh.clickElement(SRG_Search_update_page.body);
+		
+		wh.waitForElementPresent(SRG_Search_update_page.CheckAvail_link);
+		Thread.sleep(1000);	
+		 wh.clickElement(SRG_Search_update_page.CheckAvail_link);
+		 
+		 
+		 wh.waitForElementPresent(SRG_Search_update_page.update_save);
+		 Thread.sleep(1000);	
+		 wh.clickElement(SRG_Search_update_page.update_save);
+		 
+		 wh.waitForElementPresent(SRG_Search_update_page.Popup_ok);
+		
+		 report.addReportStep("Verify user is able to modify the file name upon clicking update button.", "user is able to modify the file name upon clicking update button.", StepResult.PASS);
+		 Thread.sleep(5000);
+		// wh.clickElement(SRG_Search_update_page.Popup_ok);
+		  
+		 System.out.println("Update Completed");
+
+	}
+
+	public void ResetBtn(WebDriver driver) throws Exception
+	{
+		//System.out.println("ResetBtn");
+		Thread.sleep(3000);
+		wh.waitForElementPresent(SRG_Search_update_page.RESET);
+		Thread.sleep(1000);
+		wh.clickElement(SRG_Search_update_page.RESET);
+		
+	    Thread.sleep(2000);
+	    String reset =wh.getText(SRG_Search_update_page.Grid);
+	  
+	    if(reset.contains(" "))
+	    		{
+	    		System.out.println("data in grid is cleared");
+	    		}
+	  
+	 
+
+	    report.addReportStep("Verify SRG deatils are cleared upon clicking clear button.", "SRG details are cleared upon clicking clear button.", StepResult.PASS);
+	}
+	
+	
+	public void UploadBtn(WebDriver driver) throws Exception
+	{
+		//Thread.sleep(5000);
+		wh.waitForElementPresent(SRG_Search_update_page.Uplaod_SRG_tab);
+		Thread.sleep(3000);
+		wh.clickElement(SRG_Search_update_page.Uplaod_SRG_tab);
+		
+		wh.waitForElementPresent(Uplaod_SRG.Dept);
+		Thread.sleep(3000);
+		
+		
+		try{
+			WebElement ele= driver.findElement(Uplaod_SRG.Dept);
+			
+			JavascriptExecutor executor = (JavascriptExecutor) driver;
+			((RemoteWebDriver) executor).executeScript("arguments[0].click();",
+					ele);
+			Thread.sleep(3000);
+		
+		}
+		catch(Exception e){
+			System.out.println(e);
+		}
+		
+		wh.waitForElementPresent(Uplaod_SRG.Class);
+		Thread.sleep(3000);
+		wh.clickElement(Uplaod_SRG.Class);
+		
+		wh.waitForElementPresent(Uplaod_SRG.Ctgry);
+		Thread.sleep(2000);
+		wh.clickElement(Uplaod_SRG.Ctgry);
+		
+		wh.waitForElementPresent(Uplaod_SRG.S_Ctgry);
+		Thread.sleep(2000);
+		wh.clickElement(Uplaod_SRG.S_Ctgry);
+		
+		wh.waitForElementPresent(Uplaod_SRG.BYO_toggle);
+		wh.clickElement(Uplaod_SRG.BYO_toggle);
+		
+		wh.waitForElementPresent(Uplaod_SRG.BYO);
+		Thread.sleep(2000);
+		wh.clickElement(Uplaod_SRG.BYO);
+		
+		wh.waitForElementPresent(Uplaod_SRG.Market);
+		Thread.sleep(1000);
+		wh.clickElement(Uplaod_SRG.Market);
+		
+		wh.waitForElementPresent(Uplaod_SRG.Store);
+		Thread.sleep(2000);
+		wh.clickElement(Uplaod_SRG.Store);
+		
+		wh.waitForElementPresent(Uplaod_SRG.Upload_name);
+		Thread.sleep(2000);
+		wh.clearElement(Uplaod_SRG.Upload_name);
+		
+		String timeStamp = new SimpleDateFormat("MMddHHmmss").format(Calendar.getInstance().getTime());
+		File_Name=Uplaod_SRG.New_name+timeStamp;
+		wh.sendKeys(Uplaod_SRG.Upload_name, File_Name);
+		
+		wh.waitForElementPresent(SRG_Search_update_page.body);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.body);
+		
+		 wh.waitForElementPresent(Uplaod_SRG.check_Availlink);
+		 Thread.sleep(2000);
+		 wh.clickElement(Uplaod_SRG.check_Availlink);
+		 Thread.sleep(3000);
+		
+		 String st=System.getProperty("user.dir");
+		 System.out.println("The user dir : " + st);
+		 Filepath=System.getProperty("user.dir")+SRG_Search_update_page.file_location;
+		 System.out.println(Filepath);
+		 //wh.waitForElementPresent(Uplaod_SRG.file_select);
+		// ((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
+		 driver.findElement(Uplaod_SRG.file_select).sendKeys(Filepath);
+		
+		 wh.waitForElementPresent(Uplaod_SRG.Save);   
+		 Thread.sleep(2000);
+		 wh.clickElement(Uplaod_SRG.Save);
+		
+		 	
+		    
+			
+	
+	report.addReportStep("Verify a new SRG file is uplaoded successfully.", "New SRG file is uplaoded successfully.", StepResult.PASS);
+	
+	wh.waitForElementPresent(Uplaod_SRG.popup_OK);   
+	Thread.sleep(1000);
+	wh.clickElement(Uplaod_SRG.popup_OK);
+	
+	wh.waitForElementPresent(Uplaod_SRG.Search_update_tab);  
+
+	 Thread.sleep(2000);
+		if(wh.isElementPresent(SRG_Login.invalid_alert))
+		{
+			wh.clickElement(SRG_Login.invalid_alert);
+		}
+		
+		
+		Thread.sleep(3000);
+	Thread.sleep(1000);
+	wh.clickElement(Uplaod_SRG.Search_update_tab);
+	wh.waitForElementPresent(Uplaod_SRG.Search_update_tab);  
+
+	 Thread.sleep(2000);
+		if(wh.isElementPresent(SRG_Login.invalid_alert))
+		{
+			wh.clickElement(SRG_Login.invalid_alert);
+		} 
+	Thread.sleep(4000);
+	String query="select count(*) from dbo.srg_document(nolock) where SRG_NAME='"+ File_Name +"'";
+	System.out.println(query);
+	    ResultSet rslt=DB_Config.getQryResult(query);
+	    rslt.next();
+	    String Type = rslt.getString(1);
+	    
+	    if (Type.equals("1")){
+	    	report.addReportStep("Verify the SRG document is available in the DB.", "The SRG document is available in the DB.", StepResult.PASS);	    	
+	    }
+	    
+	    else{
+	    	report.addReportStep("Verify the SRG document is not available in the DB.", "The SRG document is available in the DB.", StepResult.FAIL);
+	    }
+	    
+
+	}
+	
+	
+	public void uploadByoCLEARBtn(WebDriver driver) throws Exception
+	{
+		wh.waitForElementPresent(SRG_Search_update_page.Uplaod_SRG_tab);  
+		Thread.sleep(1000);
+		wh.clickElement(SRG_Search_update_page.Uplaod_SRG_tab);
+		
+		Thread.sleep(5000);
+		
+		
+		try{
+			wh.waitForElementPresent(Uplaod_SRG.Dept);
+			WebElement ele= driver.findElement(Uplaod_SRG.Dept);
+			
+			JavascriptExecutor executor = (JavascriptExecutor) driver;
+			((RemoteWebDriver) executor).executeScript("arguments[0].click();",
+					ele);
+			Thread.sleep(3000);
+		
+		}
+		catch(Exception e){
+			System.out.println(e);
+		}
+		
+		wh.waitForElementPresent(Uplaod_SRG.Class);
+		wh.clickElement(Uplaod_SRG.Class);
+		
+		wh.waitForElementPresent(Uplaod_SRG.Ctgry);
+		Thread.sleep(1000);
+		wh.clickElement(Uplaod_SRG.Ctgry);
+		
+		wh.waitForElementPresent(Uplaod_SRG.S_Ctgry);
+		Thread.sleep(1000);
+		wh.clickElement(Uplaod_SRG.S_Ctgry);
+		report.addReportStep(" Department hierarchy should be selected.", " Departmemt hierarchy is Selected.", StepResult.PASS);
+		
+		wh.waitForElementPresent(Uplaod_SRG.BYO_toggle);
+		wh.clickElement(Uplaod_SRG.BYO_toggle);
+		
+		wh.waitForElementPresent(Uplaod_SRG.BYO);
+		Thread.sleep(1000);
+		wh.clickElement(Uplaod_SRG.BYO);
+		
+		wh.waitForElementPresent(Uplaod_SRG.Market);
+		Thread.sleep(1000);
+		wh.clickElement(Uplaod_SRG.Market);
+		
+		wh.waitForElementPresent(Uplaod_SRG.Store);
+		Thread.sleep(1000);
+		wh.clickElement(Uplaod_SRG.Store);
+		
+		
+		Thread.sleep(1000);
+		report.addReportStep(" BYO hierarchy should be selected.", "BYO hierarchy is selected.", StepResult.PASS);
+		
+		wh.waitForElementPresent(Uplaod_SRG.Clear);
+		wh.clickElement(Uplaod_SRG.Clear);
+		
+		Thread.sleep(2000);
+		report.addReportStep("selected BYO hierarchy should be cleared.", "Selected BYO hierarchy is cleared.", StepResult.PASS);
+		
+		wh.waitForElementPresent(Uplaod_SRG.prod_clear);
+		wh.clickElement(Uplaod_SRG.prod_clear);
+		Thread.sleep(2000);
+		report.addReportStep("selected Department hierarchy should be cleared.", "Selected Departmemt hierarchy is cleared.", StepResult.PASS);
+		
+	}
+	
+	
+}

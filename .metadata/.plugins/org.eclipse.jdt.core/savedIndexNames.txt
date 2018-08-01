@@ -1,0 +1,19 @@
+INDEX VERSION 1.127+C:\jenkins_srg\.metadata\.plugins\org.eclipse.jdt.core
+1205927450.index
+583725293.index
+143655621.index
+3708256046.index
+1855556464.index
+2976906505.index
+1690249403.index
+1672555689.index
+4191868396.index
+34862339.index
+1217897094.index
+1673621012.index
+2647724718.index
+3698332331.index
+1341466513.index
+2480681288.index
+3880611209.index
+2325600484.index

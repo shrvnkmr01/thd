@@ -1,0 +1,157 @@
+##--------------------------------------------------------------------------------------------------------------------
+## File Name	: RunConfig.Properties 
+## Purpose		: Global data setup for test execution 
+##--------------------------------------------------------------------------------------------------------------------
+
+##--------------------------------------------------Set Environment---------------------------------------------------
+## Environment			: Prod, QA71, QA72, QA73, ST71, ST72, ST73
+## EnvironmentName		: Used for reporting
+## BuildVersion			: Specify Build version for reporting
+##--------------------------------------------------------------------------------------------------------------------
+Environment=Prod
+EnvironmentName=Production    
+BuildVersion=7.38
+
+##-----------------------------------------------Mode & TestSet Settings-----------------------------------------------
+## Mode				: BDD, Keyword, NonBDD execution Methodology
+## RunSource		: RunManager, TagsOrCondition, TagsAndCondition, TagsNotOrCondition, TagsNotAndCondition
+##                	  RunManager.xls for all modes & other options only for BDD mode.
+## Tags				: Will be used when "RunSource != RunManager"; provide the feature file tags for execution.
+## TestSet			: Specify the sheet name from RunManager.xls
+## ReRunFailTC		: Runs the failed test n number of times based on number set.
+## RunFailedTcs		: Set to false will run all the test cases selected in RunManager.xls
+##					  Set to true will run only failed test cases from "LastRun_FailedTC.xls"
+##--------------------------------------------------------------------------------------------------------------------
+Mode=BDD
+RunSource=RunManager
+Tags=@Scenario1
+TestSet=BDD
+ReRunFailTC=0
+RunFailedTcs=false
+
+##----------------------------------------------Environment Data Settings----------------------------------------------
+## UseEnvironmentData		: Set true will refer to Environment specific data sheet (Ex Prod, QA)
+##	                   	      Set false will refer to DataSheet
+## UseCommonEnvironmentData	: true, false
+## DataReferenceIdentifier	: Annotation reference for Data  
+##--------------------------------------------------------------------------------------------------------------------
+UseEnvironmentData=false
+UseCommonEnvironmentData=true
+DataReferenceIdentifier=#
+DataSource=excel
+
+##------------------------------------------------Distributed Execution------------------------------------------------
+## DistributedMode	: Local / Sauce / Grid / CUBE / Google Cloud VM's / Linux
+##                	  Set Local to run locally, Sauce for SauceLabs, Grid for Selenium Grid etc.
+## DistributedUrl  	: Sauce Connect or Selenium Grid URL
+## NoOfThreads	 	: Set max of 30  if DistributedMode is true else 1 for local execution
+## UseMaxLogic=true	: Set to true uses the SauceDispense service on PCF else uses local SauceLabs code.
+##--------------------------------------------------------------------------------------------------------------------
+NumberOfThreads=1
+DistributedMode=Sauce
+DistributedUrl=http://merchsq:79747d0f-6773-4e99-a189-4c0c592dcbbe@ln2a99.homedepot.com:4445/wd/hub
+UseMaxLogic=false
+SauceDispenseUrl=https://saucedispenseservice.apps-np.homedepot.com/v0/sauce/poolsize
+
+##----------------------------------------------Thread & Browser Settings----------------------------------------------
+# Execution type	: SingleThread, SauceLabMultiBrowser, MultiThread
+# BrowsersToExecute	: Multi browser option - IE, FireFox, Chrome. Select any combination
+##---------------------------------------------------------------------------------------------------------------------
+ExecutionType=SingleThread
+BrowsersToExecute=IE,Firefox,Chrome
+
+##-------------------------------------------------Screenshot Settings-------------------------------------------------
+## TakeScreenshotPassedSteps: Set true if Screen shot is required for PASSED steps else set false
+## TakeScreenshotFailedSteps: Set true if Screen shot is required for failed steps else set false
+## ImageResizePercent		: Resize image should be between 25 to 100%
+##---------------------------------------------------------------------------------------------------------------------
+TakeScreenshotPassedSteps=false
+TakeScreenshotFailedSteps=true
+ImageResizePercent=100 
+
+##---------------------------------------------------Report Settings--------------------------------------------------
+## GenerateExcelReport		: Set true if ExcelReport is required for test cases/steps else set to false
+## CaptureVideo				: Works when "SauceLabs=true", Set true if Execution video is required else set to false
+## OpenSummaryReport		: Flag for turning on/off option to open HTML Summary report after test execution
+##--------------------------------------------------------------------------------------------------------------------
+GenerateExcelReport=true
+CaptureVideo=true
+HTMLTemplate=ReportTemplate1
+SummaryReportTemplate=SummaryReportTemplate1
+SummaryReportNoChartTemplate=SummaryReportNoChartTemplate
+OpenSummaryReport=true 
+
+##------------------------------------------------SauceLabs Capabilities-----------------------------------------------
+## capabilities.browserName	: Chrome, Firefox, internet explorer, Safari, MicrosoftEdge
+## capabilities.version		: Use the correct version for the browser or use 'latest'
+## capabilities.platform	: Windows 7, Windows XP, Windows 8, Windows 8.1, OS X 10.6, Windows 10
+## UseRunManagerSetting		: true Will take browser capabilities from RunManager for SacueLabs execution 
+## TabletMode				: If set to true the browser is set to emulator for local execution. NA for SauceLabs
+##--------------------------------------------------------------------------------------------------------------------
+capabilities.browserName=Chrome
+capabilities.platform=Windows 8.1
+capabilities.version=46
+
+capabilitiesTab.deviceName=Emulation
+capabilitiesTab.appiumVersion=1.4.16
+capabilitiesTab.deviceOrientation=portrait
+capabilitiesTab.autoAcceptAlerts=ACCEPT
+capabilitiesDesktop.screenResolution=1280x1024
+
+UseRunManagerSetting=false
+TabletMode=false
+
+##-----------------------------------------------Device Testing Settings----------------------------------------------
+## DeviceTesting	: Set to true or false
+## TabletMode		: Set to true or false
+## Chrome Emulation	: Option for Mobile web; set to false for full site
+##--------------------------------------------------------------------------------------------------------------------
+DeviceTesting=false
+ChromeEmulation=false
+ChromeEmulationDevice=Apple iPad 3 / 4
+
+##-----------------------------------------------------ALM Settings----------------------------------------------------
+## UpdateResultsToALM	: Set to true or false
+## CreateTestLabFolder	: If set to true will create a new TestSet in TestLab by copying tests from TestPlan
+## ALMTestPlanPath	: Provide the Test Plan path for uploading the Test cases
+##--------------------------------------------------------------------------------------------------------------------
+UpdateResultsToALM=false
+CreateTestLabFolder=false
+ALMServerName=https://alm-qc.homedepot.com/qcbin
+ALMDomainName=ECM_E_COMMERCE_MGMT_P
+ALMProjectName=ONLINE
+ALMCreateFolderPath=Root\\Trash\\01_ALM_TestSetCreationDemo
+ALMTestPlanPath = Subject\\Trash\\01_ALM_TestCaseCreationDemo
+
+##-------------------------------------------------Status Mail Settings--------------------------------------------------
+## emailTo	: Separate email id's with ","
+##--------------------------------------------------------------------------------------------------------------------
+SendEmail=false
+emailFrom=chiranjith_narayan@homedepot.com
+emailTo=chiranjith_narayan@homedepot.com,RAVINDER_S_MEHRA@homedepot.com
+emailSubject=Homer Automation FW Test12
+RegardsFrom=Chiran
+Host=mail1.homedepot.com
+
+##-----------------------------------------------------Other Settings-----------------------------------------------------
+## UsePlainFramework	: Set to true will enable the user to define custom drivers/tools (SeeTest/Appium/Sikuli)
+##						  Set false to use the basic Selenium automation framework
+## JenkinsFilterByTags	: If set to true, filtering is done by Tags else by RunManager columns
+##------------------------------------------------------------------------------------------------------------------------
+UsePlainFramework=false
+ErrorConsole=False
+JenkinsFilterByTags=false
+
+##----------------------------------------------------QA Portal Values----------------------------------------------------
+## QAPortalEnv		: Values could be QA or AD
+## ScreenshotsToSQH	: Flag for turning on/off option to upload data to Mongo DB
+##------------------------------------------------------------------------------------------------------------------------
+QAPortal=false
+ScreenshotsToSQH=false
+WorkStreamName=MAML
+QAPortalEnv=AD
+
+##--------------------------------------------------AUT Testing Options--------------------------------------------------
+PIPUI=PIP1
+ManagePOMObjects=false
+AUTSwitch=false

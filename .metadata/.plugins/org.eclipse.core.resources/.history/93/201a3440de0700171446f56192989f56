@@ -1,0 +1,1260 @@
+package com.homer.po;
+
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.print.attribute.standard.DocumentName;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.LocalFileDetector;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.homer.dao.DataColumn;
+import com.homer.dao.InstanceContainer;
+import com.homer.enums.EnumClass.StepResult;
+import com.homer.helper.DataTable;
+import com.homer.uistore.DB_Config;
+import com.homer.uistore.SRG_Login;
+import com.homer.uistore.SRG_Search_update_page;
+import com.homer.uistore.Uplaod_SRG;
+//import com.thoughtworks.selenium.webdriven.commands.GetText;
+//import com.thoughtworks.selenium.webdriven.commands.IsElementPresent;
+
+public class SRG_Latest extends PageBase {
+	static String File_Name;
+	String File_Name1;
+	String Filepath;
+
+	static String comments;
+	static String doc;
+	static String documentname;
+	public void alert() throws Exception {
+		Thread.sleep(3000);
+		if(wh.isElementPresent(SRG_Login.invalid_alert))
+		{
+			wh.clickElement(SRG_Login.invalid_alert);
+		}
+		}
+	public SRG_Latest(InstanceContainer ic) {
+
+		super(ic);
+		// TODO Auto-generated constructor stub
+	}
+
+	public void open() throws Exception {
+		System.out.println("open");
+		driver.manage().timeouts().implicitlyWait(90, TimeUnit.SECONDS);
+		driver.get(SRG_Login.URL);
+		driver.manage().window().maximize();
+
+		wh.waitForElementPresent(SRGusrname);
+		wh.sendKeys(SRGusrname, dataTable.getData(DataColumn.User));
+		wh.sendKeys(SRGpasswrd, dataTable.getData(DataColumn.pwd));
+		Thread.sleep(1000);
+		wh.clickElement(SRGsubmit);
+
+		Thread.sleep(3000);
+		report.addReportStep("verify SRG home page is displayed.",
+				"SRG homepage is dispalyed.", StepResult.PASS);
+		alert();
+		wh.waitForElementPresent(Uplaod_SRG_tab);
+
+	}
+
+	public void UploadBtn(WebDriver driver) throws Exception {
+		// Thread.sleep(5000);
+		wh.waitForElementPresent(Uplaod_SRG_tab);
+		Thread.sleep(3000);
+		wh.clickElement(Uplaod_SRG_tab);
+		alert();
+		wh.waitForElementPresent(Uplaod_SRG.Dept);
+		Thread.sleep(3000);
+
+		try {
+			WebElement ele = driver.findElement(Uplaod_SRG.Dept);
+
+			JavascriptExecutor executor = (JavascriptExecutor) driver;
+			((RemoteWebDriver) executor).executeScript("arguments[0].click();",
+					ele);
+			alert();
+			Thread.sleep(3000);
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		wh.waitForElementPresent(Uplaod_SRG.Class);
+		Thread.sleep(3000);
+		wh.clickElement(Uplaod_SRG.Class);
+
+		wh.waitForElementPresent(Uplaod_SRG.Ctgry);
+		Thread.sleep(2000);
+		wh.clickElement(Uplaod_SRG.Ctgry);
+
+		wh.waitForElementPresent(Uplaod_SRG.S_Ctgry);
+		Thread.sleep(2000);
+		wh.clickElement(Uplaod_SRG.S_Ctgry);
+
+		wh.waitForElementPresent(Uplaod_SRG.BYO_toggle);
+		wh.clickElement(Uplaod_SRG.BYO_toggle);
+
+		wh.waitForElementPresent(Uplaod_SRG.BYO);
+		Thread.sleep(2000);
+		wh.clickElement(Uplaod_SRG.BYO);
+
+		wh.waitForElementPresent(Uplaod_SRG.Market);
+		Thread.sleep(1000);
+		wh.clickElement(Uplaod_SRG.Market);
+
+		wh.waitForElementPresent(Uplaod_SRG.Store);
+		Thread.sleep(2000);
+		wh.clickElement(Uplaod_SRG.Store);
+
+		wh.waitForElementPresent(Uplaod_SRG.Upload_name);
+		Thread.sleep(2000);
+		wh.clearElement(Uplaod_SRG.Upload_name);
+
+		String timeStamp = new SimpleDateFormat("MMddHHmmss").format(Calendar
+				.getInstance().getTime());
+		File_Name = Uplaod_SRG.New_name + timeStamp;
+		wh.sendKeys(Uplaod_SRG.Upload_name, File_Name);
+
+		wh.waitForElementPresent(SRG_Search_update_page.body);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.body);
+
+		wh.waitForElementPresent(Uplaod_SRG.check_Availlink);
+		Thread.sleep(2000);
+		wh.clickElement(Uplaod_SRG.check_Availlink);
+		Thread.sleep(3000);
+
+		Filepath = System.getProperty("user.dir")
+				+ SRG_Search_update_page.file_location;
+		System.out.println(Filepath);
+		((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
+		wh.waitForElementPresent(Uplaod_SRG.file_select);
+		driver.findElement(Uplaod_SRG.file_select).sendKeys(Filepath);
+
+		wh.waitForElementPresent(Uplaod_SRG.Save);
+		Thread.sleep(2000);
+		wh.clickElement(Uplaod_SRG.Save);
+
+		Thread.sleep(3000);
+
+		report.addReportStep("Verify a new SRG file is uplaoded successfully.",
+				"New SRG file is uplaoded successfully.", StepResult.PASS);
+
+		wh.waitForElementPresent(Uplaod_SRG.popup_OK);
+		Thread.sleep(1000);
+		wh.clickElement(Uplaod_SRG.popup_OK);
+
+		wh.waitForElementPresent(Uplaod_SRG.Search_update_tab);
+		Thread.sleep(1000);
+		wh.clickElement(Uplaod_SRG.Search_update_tab);
+		alert();
+		Thread.sleep(4000);
+		String query = "select count(*) from dbo.srg_document(nolock) where SRG_NAME='"
+				+ File_Name + "'";
+		System.out.println(query);
+		ResultSet rslt = DB_Config.getQryResult(query);
+		rslt.next();
+		String Type = rslt.getString(1);
+
+		if (Type.equals("1")) {
+			report.addReportStep(
+					"Verify the SRG document is available in the DB.",
+					"The SRG document is available in the DB.", StepResult.PASS);
+		}
+
+		else {
+			report.addReportStep(
+					"Verify the SRG document is not available in the DB.",
+					"The SRG document is available in the DB.", StepResult.FAIL);
+		}
+
+	}
+
+	public void SearchName(WebDriver driver) throws Exception {
+		System.out.println("SearchName");
+		wh.clickElement(SRG_Search_update_page.Searchpage);
+		Thread.sleep(2000);
+		alert();
+		wh.clickElement(SRG_Search_update_page.Searchby_Name);
+		Thread.sleep(1000);
+		alert();
+		driver.findElement(SRG_Search_update_page.Searchby_Name_field)
+				.sendKeys(File_Name);
+		wh.clickElement(SRG_Search_update_page.Search);
+		Thread.sleep(2000);
+		String Ref_Name = driver.findElement(SRG_Search_update_page.SRG_Name)
+				.getText();
+		if (Ref_Name.equals(File_Name)) {
+
+			report.addReportStep(
+					"Verify the SRG file is available in SRG grid while searching with its filename",
+					"The SRG file is available in SRG grid.", StepResult.PASS);
+		} else {
+			report.addReportStep(
+					"Verify the SRG file is available in SRG grid while searching with its filename",
+					"The SRG file is not available in SRG grid.",
+					StepResult.FAIL);
+		}
+	}
+
+	// clicking on uploadSRG/arealayoutPDF tab
+	public void navigate_uploadSRG_arealayoutPDF(WebDriver driver)
+			throws Exception {
+
+		wh.clickElement(SRG_Search_update_page.uploadsrg_arealayouttab);
+		alert();
+		if (wh.isElementPresent(SRG_Search_update_page.SRG_radio)) {
+			report.addReportStep("click on uploadSRG/arealayoutPDF tab ",
+					"clicked on uploadSRG/arealayoutPDF tab", StepResult.PASS);
+		} else {
+			report.addReportStep("click on uploadSRG/arealayoutPDF tab ",
+					"not  clicked on uploadSRG/arealayoutPDF tab",
+					StepResult.FAIL);
+		}
+	}
+
+	// Checking for SRG and Area Layout radio buttons
+	public void verify_radio(WebDriver driver) throws Exception {
+
+		if (wh.isElementPresent(SRG_Search_update_page.SRG_radio)) {
+			report.addReportStep(
+					"Verify whether SRG radio button is available or not",
+					"SRG radio button is available", StepResult.PASS);
+		}
+
+		else {
+			report.addReportStep(
+					"Verify whether SRG radio button is available or not",
+					"SRG radio button is not available", StepResult.FAIL);
+		}
+
+		if (wh.isElementPresent(SRG_Search_update_page.SRG_radio)) {
+			report.addReportStep(
+					"Verify whether Area Layout radio button is available or not",
+					"Area Layout radio button is available", StepResult.PASS);
+		}
+
+		else {
+			report.addReportStep(
+					"Verify whether Area Layout radio button is available or not",
+					"Area Layout radio button is not available",
+					StepResult.FAIL);
+		}
+	}
+
+	// To check whether SRC radio button is selected by default
+	// To check user is able to select only one radio button at a time
+	public void SRG_selecteddefault(WebDriver driver) throws Exception {
+
+		wh.isElementPresent(SRG_Search_update_page.SRG_radio);
+
+		if (wh.isSelected(SRG_Search_update_page.SRG_radio)) {
+			report.addReportStep(
+					"Verify whether SRG radio button is defaultly selected",
+					"SRG radio button is defaultly selected", StepResult.PASS);
+		}
+
+		else {
+			report.addReportStep(
+					"Verify whether SRG radio button is defaultly selected",
+					"SRG radio button is not selected by default",
+					StepResult.FAIL);
+		}
+
+		wh.clickElement(SRG_Search_update_page.Arealayout_radio);
+		alert();
+		if (wh.isSelected(SRG_Search_update_page.Arealayout_radio)
+				&& !(wh.isSelected(SRG_Search_update_page.SRG_radio))) {
+			report.addReportStep(
+					"Verify whether we are able to select only one radio button at a time",
+					"only one radio button is selected at a time",
+					StepResult.PASS);
+		} else {
+			report.addReportStep(
+					"Verify whether we are able to select only one radio button at a time",
+					"unable top select only one radio button is selected at a time",
+					StepResult.FAIL);
+		}
+
+	}
+
+	// method for selecting departmenet, class, category
+	public void select(WebDriver driver) throws Exception {
+
+		WebElement ele = driver.findElement(SRG_Search_update_page.Dept);
+		JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", ele);
+		Thread.sleep(3000);
+		alert();
+		wh.waitForElementPresent(SRG_Search_update_page.Class);
+		Thread.sleep(3000);
+		wh.clickElement(SRG_Search_update_page.Class);
+		alert();
+		wh.waitForElementPresent(SRG_Search_update_page.Ctgry);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.Ctgry);
+		alert();
+	}
+
+	// method to upload pdf for area layout
+	public void SRG_uploadpdf(WebDriver driver) throws Exception {
+
+		wh.waitForElementPresent(SRG_Search_update_page.Dept);
+		Thread.sleep(3000);
+
+		try {
+			WebElement ele = driver.findElement(SRG_Search_update_page.Dept);
+			JavascriptExecutor executor = (JavascriptExecutor) driver;
+			executor.executeScript("arguments[0].click();", ele);
+			Thread.sleep(3000);
+
+			wh.waitForElementPresent(SRG_Search_update_page.Class);
+			Thread.sleep(3000);
+			wh.clickElement(SRG_Search_update_page.Class);
+
+			wh.waitForElementPresent(SRG_Search_update_page.Ctgry2);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.Ctgry2);
+
+			wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry5);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.S_Ctgry5);
+			report.addReportStep(
+					" Verify whether Department hierarchy is selected.",
+					" Departmemt hierarchy is Selected.", StepResult.PASS);
+
+			wh.waitForElementPresent(SRG_Search_update_page.SRG_radio);
+			wh.clickElement(SRG_Search_update_page.SRG_radio);
+
+			wh.waitForElementPresent(Uplaod_SRG.BYO_toggle);
+			wh.clickElement(Uplaod_SRG.BYO_toggle);
+
+			wh.waitForElementPresent(Uplaod_SRG.BYO);
+			Thread.sleep(2000);
+			wh.clickElement(Uplaod_SRG.BYO);
+
+			wh.waitForElementPresent(Uplaod_SRG.Market);
+			Thread.sleep(1000);
+			wh.clickElement(Uplaod_SRG.Market);
+
+			wh.waitForElementPresent(Uplaod_SRG.Store);
+			Thread.sleep(2000);
+			wh.clickElement(Uplaod_SRG.Store);
+
+			wh.waitForElementPresent(Uplaod_SRG.Upload_name);
+			Thread.sleep(2000);
+			wh.clearElement(Uplaod_SRG.Upload_name);
+
+			String timeStamp = new SimpleDateFormat("MMddHHmmss")
+					.format(Calendar.getInstance().getTime());
+			File_Name = SRG_Search_update_page.New_name + timeStamp;
+			System.out.println(File_Name);
+			wh.sendKeys(SRG_Search_update_page.Upload_name, File_Name);
+
+			wh.waitForElementPresent(SRG_Search_update_page.body);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.body);
+
+			wh.waitForElementPresent(SRG_Search_update_page.check_Availlink);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.check_Availlink);
+			Thread.sleep(3000);
+
+			driver.findElement(SRG_Search_update_page.comments).sendKeys(
+					"Testing");
+
+			//((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
+			System.out.println();
+			String fp=System.getProperty("user.dir");
+			
+			Filepath = System.getProperty("user.dir")
+					+ SRG_Search_update_page.file_location;
+			
+			
+			
+			wh.waitForElementPresent(SRG_Search_update_page.file_select);
+			driver.findElement(SRG_Search_update_page.file_select).sendKeys(
+					Filepath);
+			save(driver);
+
+			if (wh.isElementPresent(SRG_Search_update_page.popup_error_msg)) {
+				report.addReportStep(
+						"Verify a new SRG file is uplaoded successfully.",
+						"New SRG  file is Not uploaded", StepResult.FAIL);
+			} else {
+				report.addReportStep(
+						"Verify a new SRG  file is uplaoded successfully.",
+						"New SRG  file is uplaoded successfully.",
+						StepResult.PASS);
+			}
+			wh.waitForElementPresent(Uplaod_SRG.popup_OK);
+			Thread.sleep(1000);
+			wh.clickElement(Uplaod_SRG.popup_OK);
+
+			wh.waitForElementPresent(Uplaod_SRG.Search_update_tab);
+			Thread.sleep(1000);
+			wh.clickElement(Uplaod_SRG.Search_update_tab);
+			alert();
+		} catch (Exception e) {
+			report.addReportStep(
+					"Verify a new Area Layout file is uplaoded successfully.",
+					"New Area Layout file is not uplaoded.", StepResult.FAIL);
+		}
+
+	}
+
+	// method to upload pdf for area layout
+	public void arealayout_uploadpdf(WebDriver driver) throws Exception {
+
+		wh.waitForElementPresent(SRG_Search_update_page.Dept);
+		Thread.sleep(3000);
+		alert();
+		try {
+			select(driver);
+
+			wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.S_Ctgry);
+			report.addReportStep(
+					" Verify whether Department hierarchy is selected.",
+					" Departmemt hierarchy is Selected.", StepResult.PASS);
+
+			wh.waitForElementPresent(SRG_Search_update_page.Arealayout_radio);
+			wh.clickElement(SRG_Search_update_page.Arealayout_radio);
+
+			wh.waitForElementPresent(Uplaod_SRG.BYO_toggle);
+			wh.clickElement(Uplaod_SRG.BYO_toggle);
+
+			wh.waitForElementPresent(Uplaod_SRG.BYO);
+			Thread.sleep(2000);
+			wh.clickElement(Uplaod_SRG.BYO);
+
+			wh.waitForElementPresent(Uplaod_SRG.Market);
+			Thread.sleep(1000);
+			wh.clickElement(Uplaod_SRG.Market);
+
+			wh.waitForElementPresent(Uplaod_SRG.Store);
+			Thread.sleep(2000);
+			wh.clickElement(Uplaod_SRG.Store);
+
+			wh.waitForElementPresent(Uplaod_SRG.Upload_name);
+			Thread.sleep(2000);
+			wh.clearElement(Uplaod_SRG.Upload_name);
+
+			String timeStamp = new SimpleDateFormat("MMddHHmmss")
+					.format(Calendar.getInstance().getTime());
+			File_Name = SRG_Search_update_page.New_name + timeStamp;
+			System.out.println(File_Name);
+			wh.sendKeys(SRG_Search_update_page.Upload_name, File_Name);
+
+			wh.waitForElementPresent(SRG_Search_update_page.body);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.body);
+
+			wh.waitForElementPresent(SRG_Search_update_page.check_Availlink);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.check_Availlink);
+			Thread.sleep(3000);
+
+			driver.findElement(SRG_Search_update_page.comments).sendKeys(
+					"Testing");
+
+			//((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
+			Filepath = System.getProperty("user.dir")
+					+ SRG_Search_update_page.file_location;
+			wh.waitForElementPresent(SRG_Search_update_page.file_select);
+			driver.findElement(SRG_Search_update_page.file_select).sendKeys(
+					Filepath);
+			save(driver);
+
+			if (wh.isElementPresent(SRG_Search_update_page.popup_error_msg)) {
+				report.addReportStep(
+						"Verify a new Area Layout file is uplaoded successfully.",
+						"New Area Layout file is Not uploaded", StepResult.FAIL);
+			} else {
+				report.addReportStep(
+						"Verify a new Area Layout file is uplaoded successfully.",
+						"New Area Layout file is uplaoded successfully.",
+						StepResult.PASS);
+			}
+
+			wh.waitForElementPresent(Uplaod_SRG.popup_OK);
+			Thread.sleep(1000);
+			wh.clickElement(Uplaod_SRG.popup_OK);
+			report.addReportStep(
+					"check whether file uploaded is successfully message displayed",
+					"ile uploaded is successfully message displayeds",
+					StepResult.PASS);
+
+			wh.waitForElementPresent(Uplaod_SRG.Search_update_tab);
+			Thread.sleep(1000);
+			wh.clickElement(Uplaod_SRG.Search_update_tab);
+			alert();
+		} catch (Exception e) {
+			report.addReportStep(
+					"Verify a new Area Layout file is uplaoded successfully.",
+					"New Area Layout file is not uplaoded.", StepResult.FAIL);
+		}
+
+	}
+
+	// method to click on save button
+	public void save(WebDriver driver) throws Exception {
+
+		wh.waitForElementPresent(SRG_Search_update_page.Save);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.Save);
+		alert();
+		Thread.sleep(3000);
+	}
+
+	// Checking for name field validations
+	public void namefield_validation(WebDriver driver) throws Exception {
+
+		wh.waitForElementPresent(SRG_Search_update_page.documentname);
+		String srg_arealayout = driver.findElement(
+				SRG_Search_update_page.uploadsrg_arealayouttab).getText();
+		String document_name = driver.findElement(
+				SRG_Search_update_page.documentname).getText();
+		String pls_doc_upload = driver.findElement(
+				SRG_Search_update_page.pls_document_upload).getText();
+
+		if (srg_arealayout.equals("Upload SRG/Area Layout PDF")) {
+			report.addReportStep(
+					"check whether name field is renamed to \"Upload SRG/Area Layout PDF\" ",
+					"name field is renamed to \"Upload SRG/Area Layout PDF\" ",
+					StepResult.PASS);
+
+		} else {
+			report.addReportStep(
+					"check whether name field is renamed to \"Upload SRG/Area Layout PDF\" ",
+					"name field is renamed to \"Upload SRG/Area Layout PDF\" ",
+					StepResult.FAIL);
+		}
+
+		if (document_name.equals("Document Name*")) {
+			report.addReportStep(
+					"check whether name field is renamed to \"Document Name\" ",
+					"name field is renamed to \"Document Name\" ",
+					StepResult.PASS);
+		} else {
+			report.addReportStep(
+					"check whether name field is renamed to \"Document Name\" ",
+					"name field is renamed to \"Document Name\" ",
+					StepResult.FAIL);
+		}
+
+		if (pls_doc_upload.equals("Please choose document to upload*")) {
+			report.addReportStep(
+					"check whether name field is renamed to \"Please choose document to upload\" ",
+					"name field is renamed to \"Please choose document to upload\" ",
+					StepResult.PASS);
+		} else {
+			report.addReportStep(
+					"check whether name field is renamed to \"Please choose document to upload\" ",
+					"name field is renamed to \"Please choose document to upload\" ",
+					StepResult.FAIL);
+		}
+
+	}
+
+	// checking whether file is successfully uploaded
+	public void fileupload_message_success(WebDriver driver) throws Exception {
+
+		if (wh.isElementPresent(SRG_Search_update_page.sucess_popup)) {
+
+			String popup_message = driver.findElement(
+					SRG_Search_update_page.sucess_popup).getText();
+			report.addReportStep(
+					"check whether file upload  success message is "
+							+ popup_message, "file upload  success message is "
+							+ popup_message, StepResult.PASS);
+			wh.waitForElementPresent(SRG_Search_update_page.success_ok);
+			wh.clickElement(SRG_Search_update_page.success_ok);
+			alert();
+			Thread.sleep(2000);
+
+		}
+	}
+
+	// checking for the appropriate error message
+	public void fileupload_message_error(WebDriver driver) throws Exception {
+
+		if (wh.isElementPresent(SRG_Search_update_page.error_msg_popup)) {
+
+			String popup_message = driver.findElement(
+					SRG_Search_update_page.error_msg_popup).getText();
+			report.addReportStep(
+					"check whether the failure message is poppedup "
+							+ popup_message, "failure message is popped up "
+							+ popup_message, StepResult.PASS);
+			wh.waitForElementPresent(SRG_Search_update_page.close_btn);
+			wh.clickElement(SRG_Search_update_page.close_btn);
+			alert();
+			Thread.sleep(3000);
+
+		} else {
+			report.addReportStep(
+					"check whether the failure message is popped up",
+					"failure message is not popped  up", StepResult.FAIL);
+		}
+	}
+
+	// verifying the uploaded PDF name
+	public void verify_pdfname(WebDriver driver) throws Exception {
+
+		wh.waitForElementPresent(SRG_Search_update_page.search_updateSRG_Arealayout);
+		wh.clickElement(SRG_Search_update_page.search_updateSRG_Arealayout);
+		alert();
+		wh.waitForElementPresent(SRG_Search_update_page.radio_searchbyfilename);
+		wh.clickElement(SRG_Search_update_page.radio_searchbyfilename);
+		alert();
+		wh.waitForElementPresent(SRG_Search_update_page.enter_document_name);
+		wh.sendKeys(SRG_Search_update_page.enter_document_name, File_Name);
+		wh.clickElement(SRG_Search_update_page.search_btn);
+		Thread.sleep(3000);
+		alert();
+		if (wh.isElementPresent(SRG_Search_update_page.table)) {
+			report.addReportStep(
+					"verify whether user is able to seach the uploaded PDF file "
+							+ File_Name,
+					"user is able to seach the uploaded PDF file " + File_Name,
+					StepResult.PASS);
+		} else {
+			report.addReportStep(
+					"verify whether user is able to seach the uploaded PDF file "
+							+ File_Name,
+					"user is not able to seach the uploaded PDF file "
+							+ File_Name, StepResult.FAIL);
+		}
+	}
+
+	// method for deleting the uploaded file
+	public void delete_uploadedfile(WebDriver driver) throws Exception {
+
+		try {
+
+			wh.waitForElementPresent(SRG_Search_update_page.table);
+			wh.clickElement(SRG_Search_update_page.table);
+			alert();
+			wh.waitForElementPresent(SRG_Search_update_page.delete_table);
+			wh.clickElement(SRG_Search_update_page.delete_table);
+			alert();
+			wh.waitForElementPresent(SRG_Search_update_page.success_ok);
+			wh.clickElement(SRG_Search_update_page.success_ok);
+			alert();
+			wh.waitForElementPresent(SRG_Search_update_page.success_ok);
+			wh.clickElement(SRG_Search_update_page.success_ok);
+			alert();
+			wh.waitForElementPresent(SRG_Search_update_page.success_ok);
+			wh.clickElement(SRG_Search_update_page.success_ok);
+
+			report.addReportStep(
+					"verify whether the uploaded document is deleted",
+					"uploaded document is deleted", StepResult.PASS);
+
+		} catch (Exception e) {
+
+			report.addReportStep(
+					"verify whether the uploaded document is deleted",
+					"uploaded document is not deleted", StepResult.FAIL);
+		}
+	}
+
+	// DB validations
+	public void DB_validations(WebDriver driver) throws Exception {
+
+		comments = driver.findElement(SRG_Search_update_page.table_comments)
+				.getText();
+		Thread.sleep(4000);
+		String comments_query = "select * from SRG_DOCUMENT(nolock) where SRG_NAME='"
+				+ File_Name + "'";
+
+		// verification for comments
+		ResultSet rslt = DB_Config.getQryResult(comments_query);
+		rslt.next();
+		String comment = rslt.getString("USER_COMMENTS");
+
+		if (comment.equals(comments)) {
+			report.addReportStep(
+					"Verify whether comments are updated in the data base",
+					"comments are updated in the data base", StepResult.PASS);
+		}
+
+		else {
+			report.addReportStep(
+					"Verify whether comments are updated in the data base",
+					"comments are not updated in the data base",
+					StepResult.FAIL);
+		}
+
+		String doc_no = driver.findElement(SRG_Search_update_page.doc)
+				.getText();
+		String hier_query = "Select * from SRG_POG_HIERARCHY(nolock) where DBDOCUMENTKEY = '"
+				+ doc_no + "'";
+		ResultSet rslt1 = DB_Config.getQryResult(hier_query);
+		rslt1.next();
+		String departmen = rslt1.getString("DEPT_NBR").toString();
+		String clas = rslt1.getString("CLASS_NBR").toString();
+		String catgry = rslt1.getString("CTGRY_NBR").toString();
+		String subcatgry = rslt1.getString("SUB_CTGRY_NBR").toString();
+
+		if (departmen.equals(SRG_Search_update_page.department)
+				&& clas.equals(SRG_Search_update_page.Clss)
+				&& catgry.equals(SRG_Search_update_page.category)
+				&& subcatgry.equals(SRG_Search_update_page.subcategory)) {
+			report.addReportStep("Verify whether the hierarchy is same",
+					"Hierarchy is same", StepResult.PASS);
+		}
+
+		else {
+			report.addReportStep("Verify whether the hierarchy is same",
+					"hierarchy is not same", StepResult.FAIL);
+		}
+
+		String store_query = "Select * from SRG_POG_HIERARCHY(nolock) where DBDOCUMENTKEY = '"
+				+ doc_no + "'";
+		ResultSet rslt2 = DB_Config.getQryResult(store_query);
+		rslt2.next();
+		String storeno = rslt1.getString("DBDOCUMENTKEY");
+		System.out.println("Successful");
+
+		if (!(storeno.equals(null))) {
+			report.addReportStep(
+					"Verify whether the store number is available",
+					"Store number is available", StepResult.PASS);
+		}
+
+		else {
+			report.addReportStep(
+					"Verify whether the store number is available",
+					"store number is noe available", StepResult.FAIL);
+		}
+
+		delete_uploadedfile(driver);
+		System.out.println("checking");
+	}
+
+	// checking for the uploaded document type
+	public void check_doctype(WebDriver driver) throws Exception {
+
+		String documenttype = driver.findElement(
+				SRG_Search_update_page.document_type).getText();
+
+		if (documenttype.equalsIgnoreCase("Area Layout")) {
+			report.addReportStep(
+					"Verify whether the document type is displayed "
+							+ documenttype, "document type is displayed",
+					StepResult.PASS);
+		} else {
+			report.addReportStep(
+					"Verify whether the document type is displayed "
+							+ documenttype, "document type is not displayed",
+					StepResult.PASS);
+		}
+	}
+
+	// checking for the "Document Type" after clicking on the update button
+	public void update_check_doctype(WebDriver driver) throws Exception {
+
+		wh.waitForElementPresent(SRG_Search_update_page.table);
+		wh.clickElement(SRG_Search_update_page.table);
+		alert();
+		wh.waitForElementPresent(SRG_Search_update_page.update);
+		wh.clickElement(SRG_Search_update_page.update);
+		Thread.sleep(3000);
+		alert();
+		if (wh.isElementPresent(SRG_Search_update_page.doc_type_check)) {
+			report.addReportStep(
+					"Veify whether uploaded document type is available",
+					"uploaded document type is available", StepResult.PASS);
+		} else {
+			report.addReportStep(
+					"Veify whether uploaded document type  is available",
+					"uploaded docuement type is not available", StepResult.PASS);
+		}
+
+		// verify_pdfname(driver);
+
+	}
+
+	// SRG - SRG correct validation
+	public void msg_validation_ValidSRG(WebDriver driver) throws Exception {
+
+		WebElement ele = driver.findElement(SRG_Search_update_page.Dept1);
+		JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", ele);
+		Thread.sleep(3000);
+		alert();
+		wh.waitForElementPresent(SRG_Search_update_page.Class);
+		Thread.sleep(3000);
+		wh.clickElement(SRG_Search_update_page.Class);
+
+		wh.waitForElementPresent(SRG_Search_update_page.Ctgry);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.Ctgry);
+
+		wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry2);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.S_Ctgry2);
+
+		wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry5);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.S_Ctgry5);
+
+		wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry7);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.S_Ctgry7);
+
+		report.addReportStep(
+				" Verify whether Department hierarchy is selected.",
+				" Departmemt hierarchy is Selected.", StepResult.PASS);
+
+		wh.waitForElementPresent(SRG_Search_update_page.update);
+		wh.clickElement(SRG_Search_update_page.update);
+		Thread.sleep(3000);
+		alert();
+		fileupload_message_success(driver);
+		verify_pdfname(driver);
+		delete_uploadedfile(driver);
+
+	}
+
+	// SRG - SRG error validation
+	public void msg_validation_inValidSRG(WebDriver driver) throws Exception {
+
+		WebElement ele = driver.findElement(SRG_Search_update_page.Dept1);
+		JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", ele);
+		Thread.sleep(3000);
+
+		wh.waitForElementPresent(SRG_Search_update_page.Class);
+		Thread.sleep(3000);
+		wh.clickElement(SRG_Search_update_page.Class);
+
+		wh.waitForElementPresent(SRG_Search_update_page.Ctgry2);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.Ctgry2);
+
+		wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry5);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.S_Ctgry5);
+
+		wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry6);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.S_Ctgry6);
+
+		report.addReportStep(
+				" Verify whether Department hierarchy is selected.",
+				" Departmemt hierarchy is Selected.", StepResult.PASS);
+
+		wh.waitForElementPresent(SRG_Search_update_page.update);
+		wh.clickElement(SRG_Search_update_page.update);
+		Thread.sleep(3000);
+		
+		fileupload_message_error(driver);
+		alert();
+		verify_pdfname(driver);
+		delete_uploadedfile(driver);
+
+	}
+
+	// Area layout - Area layout correct validation
+	public void msg_validation_Validarealayout(WebDriver driver)
+			throws Exception {
+
+		WebElement ele = driver.findElement(SRG_Search_update_page.Dept1);
+		JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", ele);
+		Thread.sleep(3000);
+		alert();
+		wh.waitForElementPresent(SRG_Search_update_page.Class);
+		Thread.sleep(3000);
+		wh.clickElement(SRG_Search_update_page.Class);
+
+		wh.waitForElementPresent(SRG_Search_update_page.Ctgry);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.Ctgry);
+
+		wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.S_Ctgry);
+
+		wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry3);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.S_Ctgry3);
+		report.addReportStep(
+				" Verify whether Department hierarchy is selected.",
+				" Departmemt hierarchy is Selected.", StepResult.PASS);
+
+		wh.waitForElementPresent(SRG_Search_update_page.update);
+		wh.clickElement(SRG_Search_update_page.update);
+		Thread.sleep(3000);
+
+		fileupload_message_success(driver);
+		verify_pdfname(driver);
+		delete_uploadedfile(driver);
+
+	}
+
+	// Area layout - Area layout correct validation
+	public void msg_validation_inValidarealayout(WebDriver driver)
+			throws Exception {
+
+		WebElement ele = driver.findElement(SRG_Search_update_page.Dept1);
+		JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", ele);
+		Thread.sleep(3000);
+		alert();
+		wh.waitForElementPresent(SRG_Search_update_page.Class);
+		Thread.sleep(3000);
+		wh.clickElement(SRG_Search_update_page.Class);
+
+		wh.waitForElementPresent(SRG_Search_update_page.Ctgry);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.Ctgry);
+
+		wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.S_Ctgry);
+
+		wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry2);
+		Thread.sleep(2000);
+		wh.clickElement(SRG_Search_update_page.S_Ctgry2);
+		report.addReportStep(
+				" Verify whether Department hierarchy is selected.",
+				" Departmemt hierarchy is Selected.", StepResult.PASS);
+
+		wh.waitForElementPresent(SRG_Search_update_page.update);
+		wh.clickElement(SRG_Search_update_page.update);
+		Thread.sleep(3000);
+
+		fileupload_message_error(driver);
+		verify_pdfname(driver);
+		delete_uploadedfile(driver);
+	}
+
+	public void upload_another_PDF_document() throws Exception {
+		wh.waitForElementPresent(SRG_Search_update_page.Dept);
+		Thread.sleep(3000);
+		alert();
+		try {
+			select(driver);
+
+			wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.S_Ctgry);
+			report.addReportStep(
+					" Verify whether Department hierarchy is selected.",
+					" Departmemt hierarchy is Selected.", StepResult.PASS);
+
+			wh.waitForElementPresent(SRG_Search_update_page.Arealayout_radio);
+			wh.clickElement(SRG_Search_update_page.Arealayout_radio);
+
+			wh.waitForElementPresent(Uplaod_SRG.BYO_toggle);
+			wh.clickElement(Uplaod_SRG.BYO_toggle);
+
+			wh.waitForElementPresent(Uplaod_SRG.BYO);
+			Thread.sleep(2000);
+			wh.clickElement(Uplaod_SRG.BYO);
+
+			wh.waitForElementPresent(Uplaod_SRG.Market);
+			Thread.sleep(1000);
+			wh.clickElement(Uplaod_SRG.Market);
+
+			wh.waitForElementPresent(Uplaod_SRG.Store);
+			Thread.sleep(2000);
+			wh.clickElement(Uplaod_SRG.Store);
+
+			wh.waitForElementPresent(Uplaod_SRG.Upload_name);
+			Thread.sleep(2000);
+			wh.clearElement(Uplaod_SRG.Upload_name);
+
+			String timeStamp = new SimpleDateFormat("MMddHHmmss")
+					.format(Calendar.getInstance().getTime());
+			File_Name = SRG_Search_update_page.New_name + timeStamp;
+			System.out.println(File_Name);
+			wh.sendKeys(SRG_Search_update_page.Upload_name, File_Name);
+
+			wh.waitForElementPresent(SRG_Search_update_page.body);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.body);
+
+			wh.waitForElementPresent(SRG_Search_update_page.check_Availlink);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.check_Availlink);
+			Thread.sleep(3000);
+
+			driver.findElement(SRG_Search_update_page.comments).sendKeys(
+					"Testing");
+			((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
+
+			Filepath = System.getProperty("user.dir")
+					+ SRG_Search_update_page.file_location_SRG;
+			wh.waitForElementPresent(SRG_Search_update_page.file_select);
+			driver.findElement(SRG_Search_update_page.file_select).sendKeys(Filepath);
+			save(driver);
+
+			if (wh.isElementPresent(SRG_Search_update_page.popup_error_msg)) {
+				report.addReportStep(
+						"Verify a new Area Layout file is uplaoded successfully.",
+						"New Area Layout file is Not uploaded", StepResult.FAIL);
+			} else {
+				report.addReportStep(
+						"Verify a new Area Layout file is uplaoded successfully.",
+						"New Area Layout file is uplaoded successfully.",
+						StepResult.PASS);
+			}
+
+			wh.waitForElementPresent(Uplaod_SRG.popup_OK);
+			Thread.sleep(1000);
+			wh.clickElement(Uplaod_SRG.popup_OK);
+			report.addReportStep(
+					"check whether file uploaded is successfully message displayed",
+					"ile uploaded is successfully message displayeds",
+					StepResult.PASS);
+
+			wh.waitForElementPresent(SRG_Search_update_page.uploadsrg_arealayouttab);
+			Thread.sleep(1000);
+			wh.clickElement(SRG_Search_update_page.uploadsrg_arealayouttab);
+			Thread.sleep(2000);
+			alert();
+			arealayout_uploadpdf(driver);
+			viewhierarcghy(driver);
+
+		} catch (Exception e) {
+			report.addReportStep(
+					"Verify a new Area Layout file is uplaoded successfully.",
+					"New Area Layout file is not uplaoded.", StepResult.FAIL);
+		}
+
+	}
+	
+	public void viewhierarcghy(WebDriver driver)throws Exception{
+		int n = 0;
+		try{
+		
+			wh.waitForElementPresent(SRG_Search_update_page.search_updateSRG_Arealayout);
+			Thread.sleep(3000);
+			wh.clickElement(SRG_Search_update_page.search_updateSRG_Arealayout);
+			alert();
+			wh.waitForElementPresent(SRG_Search_update_page.Dept2);
+			Thread.sleep(3000);
+			wh.clickElement(SRG_Search_update_page.Dept2);
+
+			wh.waitForElementPresent(SRG_Search_update_page.Class);
+			Thread.sleep(3000);
+			wh.clickElement(SRG_Search_update_page.Class);
+
+			wh.waitForElementPresent(SRG_Search_update_page.Ctgry);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.Ctgry);
+		
+			wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry8);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.S_Ctgry8);
+		
+			wh.waitForElementPresent(SRG_Search_update_page.search_btn);
+			wh.clickElement(SRG_Search_update_page.search_btn);
+			Thread.sleep(2000);
+		
+	
+			n = driver.findElements(By.xpath("//*[@id='searchDivGrid']//tr")).size();
+			
+			report.addReportStep(
+					"verify whether '"+(n-1)+"' file are uploaded",
+					" '"+(n-1)+"' file are uploaded",
+					StepResult.PASS);
+			
+			for(int i=1;i<n; i++){
+				
+				Thread.sleep(3000);
+				driver.findElement(By.xpath("//*[@id='searchDivGrid']//tr[2]")).click();
+				wh.waitForElementPresent(SRG_Search_update_page.delete_table);
+				wh.clickElement(SRG_Search_update_page.delete_table);
+				Thread.sleep(2000);
+				alert();
+				wh.waitForElementPresent(SRG_Search_update_page.success_ok);
+				wh.clickElement(SRG_Search_update_page.success_ok);
+			
+				wh.waitForElementPresent(SRG_Search_update_page.success_ok);
+				wh.clickElement(SRG_Search_update_page.success_ok);
+				
+			}
+		}catch(Exception e){
+			report.addReportStep(
+					"verify whether '"+(n-1)+"' file are uploaded",
+					" '"+(n-1)+"' file are not uploaded",
+					StepResult.FAIL);
+		}
+		
+	}
+	
+	public void multiple_subctgry_srg() throws Exception {
+		wh.waitForElementPresent(SRG_Search_update_page.Dept);
+		Thread.sleep(3000);
+		alert();
+		try {
+			WebElement ele = driver.findElement(SRG_Search_update_page.Dept);
+			JavascriptExecutor executor = (JavascriptExecutor) driver;
+			executor.executeScript("arguments[0].click();", ele);
+			Thread.sleep(3000);
+
+			wh.waitForElementPresent(SRG_Search_update_page.clss2);
+			Thread.sleep(3000);
+			wh.clickElement(SRG_Search_update_page.clss2);
+			
+			wh.waitForElementPresent(SRG_Search_update_page.Ctgry3);
+			Thread.sleep(3000);
+			wh.clickElement(SRG_Search_update_page.Ctgry3);
+
+			wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry10);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.S_Ctgry10);
+
+			wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry11);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.S_Ctgry11);
+			report.addReportStep(
+					" Verify whether Department hierarchy is selected.",
+					" Departmemt hierarchy is Selected.", StepResult.PASS);
+
+			wh.waitForElementPresent(SRG_Search_update_page.SRG_radio);
+			wh.clickElement(SRG_Search_update_page.SRG_radio);
+
+			wh.waitForElementPresent(Uplaod_SRG.BYO_toggle);
+			wh.clickElement(Uplaod_SRG.BYO_toggle);
+
+			wh.waitForElementPresent(Uplaod_SRG.BYO);
+			Thread.sleep(2000);
+			wh.clickElement(Uplaod_SRG.BYO);
+
+			wh.waitForElementPresent(Uplaod_SRG.Market);
+			Thread.sleep(1000);
+			wh.clickElement(Uplaod_SRG.Market);
+
+			wh.waitForElementPresent(Uplaod_SRG.Store);
+			Thread.sleep(2000);
+			wh.clickElement(Uplaod_SRG.Store);
+
+			wh.waitForElementPresent(Uplaod_SRG.Upload_name);
+			Thread.sleep(2000);
+			wh.clearElement(Uplaod_SRG.Upload_name);
+
+			String timeStamp = new SimpleDateFormat("MMddHHmmss")
+					.format(Calendar.getInstance().getTime());
+			File_Name = SRG_Search_update_page.New_name + timeStamp;
+			System.out.println(File_Name);
+			wh.sendKeys(SRG_Search_update_page.Upload_name, File_Name);
+
+			wh.waitForElementPresent(SRG_Search_update_page.body);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.body);
+
+			wh.waitForElementPresent(SRG_Search_update_page.check_Availlink);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.check_Availlink);
+			Thread.sleep(3000);
+
+			driver.findElement(SRG_Search_update_page.comments).sendKeys(
+					"Testing");
+
+			//((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
+			Filepath = System.getProperty("user.dir")
+					+ SRG_Search_update_page.file_location_SRG;
+			wh.waitForElementPresent(SRG_Search_update_page.file_select);
+			driver.findElement(SRG_Search_update_page.file_select).sendKeys(Filepath);
+			save(driver);
+
+			if (wh.isElementPresent(SRG_Search_update_page.popup_error_msg)) {
+				report.addReportStep(
+						"Verify a new Area Layout file is uplaoded successfully.",
+						"New Area Layout file is Not uploaded", StepResult.FAIL);
+			} else {
+				report.addReportStep(
+						"Verify a new Area Layout file is uplaoded successfully.",
+						"New Area Layout file is uplaoded successfully.",
+						StepResult.PASS);
+			}
+
+			wh.waitForElementPresent(Uplaod_SRG.popup_OK);
+			Thread.sleep(1000);
+			wh.clickElement(Uplaod_SRG.popup_OK);
+			report.addReportStep(
+					"check whether file uploaded is successfully message displayed",
+					"ile uploaded is successfully message displayeds",
+					StepResult.PASS);
+
+
+		} catch (Exception e) {
+			report.addReportStep(
+					"Verify a new Area Layout file is uplaoded successfully.",
+					"New Area Layout file is not uplaoded.", StepResult.FAIL);
+		}
+
+	}
+	
+	public void viewhierarcghy_srg(WebDriver driver)throws Exception{
+		int n = 0;
+		try{
+		
+			wh.waitForElementPresent(SRG_Search_update_page.search_updateSRG_Arealayout);
+			Thread.sleep(3000);
+			wh.clickElement(SRG_Search_update_page.search_updateSRG_Arealayout);
+			alert();
+			wh.waitForElementPresent(SRG_Search_update_page.Dept2);
+			Thread.sleep(3000);
+			wh.clickElement(SRG_Search_update_page.Dept2);
+
+			wh.waitForElementPresent(SRG_Search_update_page.clss2);
+			Thread.sleep(3000);
+			wh.clickElement(SRG_Search_update_page.clss2);
+			
+			wh.waitForElementPresent(SRG_Search_update_page.Ctgry3);
+			Thread.sleep(3000);
+			wh.clickElement(SRG_Search_update_page.Ctgry3);
+
+			wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry10);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.S_Ctgry10);
+
+			wh.waitForElementPresent(SRG_Search_update_page.S_Ctgry11);
+			Thread.sleep(2000);
+			wh.clickElement(SRG_Search_update_page.S_Ctgry11);
+		
+			wh.waitForElementPresent(SRG_Search_update_page.search_btn);
+			wh.clickElement(SRG_Search_update_page.search_btn);
+			Thread.sleep(2000);
+		
+	
+			n = driver.findElements(By.xpath("//*[@id='searchDivGrid']//tr")).size();
+			
+			report.addReportStep(
+					"verify whether '"+(n-1)+"' file are uploaded",
+					" '"+(n-1)+"' file are uploaded",
+					StepResult.PASS);
+			
+			
+		}catch(Exception e){
+			report.addReportStep(
+					"verify whether '"+(n-1)+"' file are uploaded",
+					" '"+(n-1)+"' file are not uploaded",
+					StepResult.FAIL);
+		}
+		
+	}
+
+}

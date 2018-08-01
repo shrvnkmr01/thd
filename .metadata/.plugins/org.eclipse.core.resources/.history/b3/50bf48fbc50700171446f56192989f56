@@ -1,0 +1,573 @@
+package com.homer.po;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+
+import com.homer.dao.DataColumn;
+import com.homer.dao.InstanceContainer;
+import com.homer.enums.EnumClass.StepResult;
+
+public class POG_portal extends PageBase {
+
+	public POG_portal(InstanceContainer ic) {
+
+		super(ic);
+		// TODO Auto-generated constructor stub
+	}
+
+	String POGADMIN_dept, POGADMIN_class, POGADMIN_Category,
+			POGADMIN_SubCategory, store;
+	String CartBefore, CartAfter, CartAfterRemove;
+	int CartValueBefore, CartValueAfter, CartValueAfterRemove;
+
+	public void HierarchyValues() throws Exception {
+
+		POGADMIN_dept = dataTable.getData(DataColumn.Department);
+		POGADMIN_class = dataTable.getData(DataColumn.Class);
+		POGADMIN_Category = dataTable.getData(DataColumn.Category);
+		POGADMIN_SubCategory = dataTable.getData(DataColumn.SubCategory);
+		store = dataTable.getData(DataColumn.Store);
+
+	}
+
+	public void pogloginGreenJone() throws Exception {
+
+		driver.manage().deleteAllCookies();
+		// rc.preSetUp();
+		String URL = "https://webapps-qa.homedepot.com/Planogram/?debug";
+		driver.get(URL);
+		driver.manage().window().maximize();
+		rc.waitExplicitly(Submit_button);
+
+		report.addReportStepWithScreenshots("Open POG portal", "POG portal",
+				StepResult.PASS);
+		Thread.sleep(3000);
+	}
+
+	public void Pogportal_Login(String Username, String Password_value)
+			throws Exception {
+		rc.waitExplicitly(Submit_button);
+
+		if (wh.isElementPresent(User_ID)) {
+
+			wh.sendKeys(User_ID, Username);
+		}
+
+		if (wh.isElementPresent(Password)) {
+
+			wh.sendKeys(Password, Password_value);
+		}
+
+		if (wh.isElementPresent(Submit_button)) {
+
+			wh.clickElement(Submit_button);
+
+			// rc.waitExplicitly(AMT_To_POG);
+
+			Thread.sleep(3000);
+			report.addReportStepWithScreenshots("POG Portal Log-in ",
+					"POG Portal Log-in is successful", StepResult.PASS);
+			Thread.sleep(3000);
+		}
+
+	}
+
+	public void navigate_to_View_Search_planograms_tab() {
+		try {
+
+			rc.waitExplicitly(POGViewSearchTab);
+			Thread.sleep(2000);
+
+			if (wh.isElementPresent(POGViewsearchButton)) {
+				rc.fnHighlightMe(driver, POGViewSearchTab);
+
+				report.addReportStepWithScreenshots(
+						"Navigate to View/Search tab",
+						"Navigated to View/Search tab", StepResult.PASS);
+				Thread.sleep(3000);
+
+			} else {
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void HierarchyInput() throws Exception {
+		HierarchyValues();
+
+		if (rc.dropDown(POGDeptField, POGADMIN_dept)) {
+
+			wh.selectValue(POGDeptField, POGADMIN_dept);
+
+			if (rc.dropDown(POGclassField, POGADMIN_class)) {
+
+				wh.selectValue(POGclassField, POGADMIN_class);
+
+				if (rc.dropDown(POGcategoryField, POGADMIN_Category)) {
+
+					wh.selectValue(POGcategoryField, POGADMIN_Category);
+
+					if (rc.dropDown(POGsubCategoryField, POGADMIN_SubCategory)) {
+
+						wh.selectValue(POGsubCategoryField,
+								POGADMIN_SubCategory);
+
+						report.addReportStepWithScreenshots(
+								"select the department, class, category and Sub-category",
+								"selected the department, class, category and Sub-category",
+								StepResult.PASS);
+
+					} else {
+
+						report.addReportStepWithScreenshots(
+								"select the department, class, category and Sub-category",
+								"Not able to select Sub-category",
+								StepResult.FAIL);
+					}
+
+				} else {
+
+					// System.out.println("Category is not present");
+					report.addReportStepWithScreenshots(
+							"select the department, class, category and Sub-category",
+							"Not able to select Category", StepResult.FAIL);
+				}
+
+			} else {
+
+				// System.out.println("Class is not present");
+				report.addReportStepWithScreenshots(
+						"select the department, class, category and Sub-category",
+						"Not able to select Class", StepResult.FAIL);
+			}
+
+		} else {
+
+			// System.out.println("dept is not present");
+			report.addReportStepWithScreenshots(
+					"select the department, class, category and Sub-category",
+					"Not able to select Department", StepResult.FAIL);
+		}
+
+	}
+
+	public void StoreInput() throws Exception {
+
+		Thread.sleep(2000);
+		if (!store.isEmpty()) {
+			if (wh.isElementPresent(POGStoreField)) {
+
+				driver.findElement(POGStoreField).sendKeys(store, Keys.TAB);
+
+				rc.fnHighlightMe(driver, POGStoreField);
+
+				report.addReportStepWithScreenshots(
+						"Enter the store number in Store field",
+						"Entered the store number " + store + " in Store field",
+						StepResult.PASS);
+
+				// wh.clickElement(POGViewsearchButton);
+				// rc.waitExplicitly(POGSeachGridview);
+
+			} else {
+
+				report.addReportStepWithScreenshots(
+						"Enter the store number in Store field",
+						"Store field not populated", StepResult.PASS);
+
+			}
+		} else {
+			System.out.println("No value provided for store field");
+		}
+
+	}
+
+	public void ViewtabSearchButton() throws Exception {
+
+		Thread.sleep(2000);
+		if (wh.isElementPresent(POGViewsearchButton)) {
+
+			rc.fnHighlightMe(driver, POGViewsearchButton);
+			wh.clickElement(POGViewsearchButton);
+
+			rc.waitExplicitly(POGSeachGridview);
+			Thread.sleep(3000);
+
+			report.addReportStepWithScreenshots(
+					"Result View grid should populate",
+					"Result View grid populated", StepResult.PASS);
+
+		} else {
+
+			report.addReportStepWithScreenshots(
+					"Result View grid should populate",
+					"Result View grid not populated", StepResult.FAIL);
+
+		}
+
+	}
+
+	public void SRGColValidationWithStoreValue() {
+
+		try {
+			if (wh.getText(POGSRGColumn).equals("SRG/DOC")) {
+
+				// System.out.println("Column Name: " +
+				// wh.getText(POGSRGColumn));
+				rc.fnHighlightMe(driver, POGSRGColumn);
+
+				report.addReportStepWithScreenshots(
+						"SRG/DOC column should populate in Search result Grid",
+						"SRG/DOC column populated in Search result Grid",
+						StepResult.PASS);
+
+				if (wh.isElementPresent(By.className("addSrgCart"))) {
+
+					WebElement element = driver.findElement(By
+							.className("addSrgCart"));
+
+					String Cart = element.getAttribute("title");
+					// System.out.println(Cart);
+
+					if (Cart.contains("Add To Cart")) {
+						rc.fnHighlightMe(driver, By.className("addSrgCart"));
+
+						report.addReportStepWithScreenshots(
+								"SRG/DOC column should populate along with Cart image with AreaLayout/SRG PDF icon",
+								"SRG/DOC column populated along with Cart image with AreaLayout/SRG PDF icon",
+								StepResult.PASS);
+					}
+
+				} else {
+
+					report.addReportStepWithScreenshots(
+							"SRG/DOC column should populate along with Cart image with AreaLayout/SRG PDF icon",
+							"SRG/DOC column populated without Cart image with AreaLayout/SRG PDF icon",
+							StepResult.FAIL);
+				}
+			} else {
+
+				report.addReportStepWithScreenshots(
+						"SRG/DOC column should populate in Search result Grid",
+						"SRG/DOC column is not populated in Search result Grid",
+						StepResult.FAIL);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void SRGColValidationWithOutStoreValue() throws Exception {
+
+		try {
+			if (wh.getText(POGSRGColumn).equals("SRG/DOC")) {
+
+				// System.out.println("Column Name: " +
+				// wh.getText(POGSRGColumn));
+				rc.fnHighlightMe(driver, POGSRGColumn);
+
+				report.addReportStepWithScreenshots(
+						"SRG/DOC column should populate in Search result Grid",
+						"SRG/DOC column populated in Search result Grid",
+						StepResult.PASS);
+
+				if (wh.isElementPresent(By.className("addSrgCart"))) {
+
+					WebElement element = driver.findElement(By
+							.className("addSrgCart"));
+
+					String Cart = element.getAttribute("title");
+					// System.out.println(Cart);
+
+					if (Cart.contains("Add To Cart")) {
+						rc.fnHighlightMe(driver, By.className("addSrgCart"));
+
+						report.addReportStepWithScreenshots(
+								"SRG/DOC column",
+								"SRG/DOC column populated along with Cart image with AreaLayout/SRG PDF icon",
+								StepResult.FAIL);
+					}
+
+				} else {
+
+					report.addReportStepWithScreenshots(
+							"SRG/DOC column",
+							"SRG/DOC column populated without Cart image with AreaLayout/SRG PDF icon",
+							StepResult.PASS);
+				}
+			} else {
+
+				report.addReportStepWithScreenshots(
+						"SRG/DOC column should populate in Search result Grid",
+						"SRG/DOC column is not populated in Search result Grid",
+						StepResult.FAIL);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void AddToCartAction() {
+		try {
+
+			if (wh.isElementPresent(By.className("addSrgCart"))) {
+
+				CartBefore = wh.getText(By
+						.id("viewSearchPOGViewCartLinkHolder"));
+				CartBefore = CartBefore.replaceAll("[^0-9]", "");
+				CartValueBefore = Integer.parseInt(CartBefore);
+				System.out.println("CartValueBefore " + CartValueBefore);
+
+				report.addReportStepWithScreenshots("Cart Value before adding",
+						"Cart Value: " + CartValueBefore, StepResult.PASS);
+
+				Thread.sleep(1000);
+				wh.clickElement(AddToCart);
+				wh.waitForPageLoaded();
+				Thread.sleep(1000);
+
+				report.addReportStepWithScreenshots("Add to Cart Button",
+						"Clicked on Add to Cart Button", StepResult.PASS);
+			} else {
+				report.addReportStepWithScreenshots("Add to Cart Button",
+						"Not able to click", StepResult.PASS);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void VerifyAddCart() {
+		try {
+
+			Thread.sleep(2000);
+			// wh.getText(By.id("viewSearchPOGViewCartLinkHolder"))
+			// System.out.println("Add: "+wh.getText(By.id("viewSearchPOGViewCartLinkHolder")));
+
+			CartAfter = wh.getText(By.id("viewSearchPOGViewCartLinkHolder"));
+			CartAfter = CartAfter.replaceAll("[^0-9]", "");
+			CartValueAfter = Integer.parseInt(CartAfter);
+			System.out.println("CartValueAfter " + CartValueAfter);
+
+			report.addReportStepWithScreenshots("Cart Value after adding",
+					"Cart Value: " + CartValueAfter, StepResult.PASS);
+
+			if (CartValueAfter > CartValueBefore) {
+
+				report.addReportStepWithScreenshots(
+						"verify View cart items count increment",
+						"Cart value changes from " + CartValueBefore + " to "
+								+ CartValueAfter, StepResult.PASS);
+
+			} else {
+
+				report.addReportStepWithScreenshots(
+						"verify View cart items count increment",
+						"Cart value changes from " + CartValueBefore + " to "
+								+ CartValueAfter, StepResult.FAIL);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void RemoveFromCartAction() {
+		try {
+
+			if (wh.isElementPresent(By.className("removeSrgCart"))) {
+
+				CartBefore = wh.getText(By
+						.id("viewSearchPOGViewCartLinkHolder"));
+				CartBefore = CartBefore.replaceAll("[^0-9]", "");
+				CartValueBefore = Integer.parseInt(CartBefore);
+				System.out.println("CartValueBefore " + CartValueBefore);
+
+				report.addReportStepWithScreenshots(
+						"Cart Value before Deleting", "Cart Value: "
+								+ CartValueBefore, StepResult.PASS);
+
+				Thread.sleep(1000);
+				wh.clickElement(RemoveFromCart);
+				wh.waitForPageLoaded();
+				Thread.sleep(1000);
+
+				report.addReportStepWithScreenshots("Remove from Cart Button",
+						"Clicked on Remove from Cart Button", StepResult.PASS);
+			} else {
+				report.addReportStepWithScreenshots("Remove from Cart Button",
+						"Not able to click", StepResult.PASS);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void VerifyRemoveCart() {
+		try {
+
+			Thread.sleep(2000);
+			// wh.getText(By.id("viewSearchPOGViewCartLinkHolder"))
+			// System.out.println("Add: "+wh.getText(By.id("viewSearchPOGViewCartLinkHolder")));
+
+			CartAfterRemove = wh.getText(By
+					.id("viewSearchPOGViewCartLinkHolder"));
+			CartAfterRemove = CartAfterRemove.replaceAll("[^0-9]", "");
+			CartValueAfterRemove = Integer.parseInt(CartAfterRemove);
+			System.out.println("CartValueAfterRemove " + CartValueAfterRemove);
+
+			report.addReportStepWithScreenshots("Cart Value after adding",
+					"Cart Value: " + CartValueAfterRemove, StepResult.PASS);
+
+			if (CartValueAfter > CartValueAfterRemove) {
+
+				report.addReportStepWithScreenshots(
+						"verify View cart items count should reduce",
+						"Cart value changes from " + CartValueAfter + " to "
+								+ CartValueAfterRemove, StepResult.PASS);
+
+			} else {
+
+				report.addReportStepWithScreenshots(
+						"verify View cart items count should reduce",
+						"Cart value changes from " + CartValueAfter + " to "
+								+ CartValueAfterRemove, StepResult.FAIL);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void Download() throws Exception {
+
+		Thread.sleep(1000);
+
+		if (wh.isElementPresent(viewSearchDownload)) {
+
+			wh.clickElement(viewSearchDownload);
+			Thread.sleep(2000);
+
+			report.addReportStepWithScreenshots("Download Button", "Clicked",
+					StepResult.PASS);
+		} else {
+
+			report.addReportStepWithScreenshots("Download Button",
+					"Not able to Click", StepResult.FAIL);
+		}
+
+	}
+
+	public void verifyYvalueExcel() throws Exception {
+
+		String SRG_ExcelValue;
+		String filepath = System.getProperty("user.home");
+		File dir = new File(filepath + "\\Downloads");
+
+		FileInputStream Ifile = new FileInputStream(new File(dir + "\\"
+				+ rc.Latestfile()));
+
+		@SuppressWarnings("resource")
+		XSSFWorkbook workbook = new XSSFWorkbook(Ifile);
+
+		// XSSFSheet sheet = workbook.getSheetAt(0);//
+		// ("Price and Cost Change Request");
+
+		Sheet sheet1 = workbook.getSheetAt(0);
+		Row row = sheet1.getRow(3);
+		if (row != null) {
+			Cell cell = row.getCell(5);
+			SRG_ExcelValue = cell.toString();
+
+			if (SRG_ExcelValue.equals("Y")) {
+
+				report.addReportStepWithScreenshots(
+						"SRG/DOC column should display value as Y in Excel sheet",
+						"SRG/DOC column value: " + SRG_ExcelValue,
+						StepResult.PASS);
+
+			} else {
+
+				report.addReportStepWithScreenshots(
+						"SRG/DOC column should display value as Y in Excel sheet",
+						"SRG/DOC column value: " + SRG_ExcelValue,
+						StepResult.FAIL);
+
+			}
+
+		} else {
+
+			report.addReportStepWithScreenshots("Excel data Validaiton",
+					"No Data present", StepResult.FAIL);
+		}
+
+	}
+
+	public void verifyNvalueExcel() throws Exception {
+
+		String SRG_ExcelValue;
+		String filepath = System.getProperty("user.home");
+		File dir = new File(filepath + "\\Downloads");
+
+		FileInputStream Ifile = new FileInputStream(new File(dir + "\\"
+				+ rc.Latestfile()));
+
+		@SuppressWarnings("resource")
+		XSSFWorkbook workbook = new XSSFWorkbook(Ifile);
+
+		// XSSFSheet sheet = workbook.getSheetAt(0);//
+		// ("Price and Cost Change Request");
+
+		Sheet sheet1 = workbook.getSheetAt(0);
+		Row row = sheet1.getRow(3);
+		if (row != null) {
+			Cell cell = row.getCell(5);
+			SRG_ExcelValue = cell.toString();
+
+			if (SRG_ExcelValue.equals("N")) {
+
+				report.addReportStepWithScreenshots(
+						"SRG/DOC column should display value as N in Excel sheet",
+						"SRG/DOC column value: " + SRG_ExcelValue,
+						StepResult.PASS);
+
+			} else {
+
+				report.addReportStepWithScreenshots(
+						"SRG/DOC column should display value as N in Excel sheet",
+						"SRG/DOC column value: " + SRG_ExcelValue,
+						StepResult.FAIL);
+
+			}
+
+		} else {
+
+			report.addReportStepWithScreenshots("Excel data Validaiton",
+					"No Data present", StepResult.FAIL);
+		}
+
+	}
+
+}
